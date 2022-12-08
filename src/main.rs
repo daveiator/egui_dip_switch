@@ -21,7 +21,7 @@ impl Default for SwitchTest {
 }
 
 impl App for SwitchTest {
-    fn update(&mut self, ctx: &eframe::egui::Context, frame: &mut eframe::Frame) {
+    fn update(&mut self, ctx: &eframe::egui::Context, _: &mut eframe::Frame) {
         eframe::egui::CentralPanel::default().show(ctx, |ui| {
             ui.label("Dip-Switch Demo");
             ui.add(eframe::egui::Slider::new(&mut self.font_size, 1.0..=100.0).text("Font Size"));

@@ -16,8 +16,8 @@ impl<'a> DipSwitch<'a> {
         }
     }
 
-    fn draw_switch(&self, ui: &mut Ui, value: bool, index: u8) -> egui::Response {
-        let (rect, mut response) = ui.allocate_exact_size(egui::vec2(ui.style().text_styles.get(&egui::TextStyle::Body).unwrap().size * 10.0/14.0 , ui.style().text_styles.get(&egui::TextStyle::Body).unwrap().size * 20.0/14.0), egui::Sense::click());
+    fn draw_switch(&self, ui: &mut Ui, value: bool) -> egui::Response {
+        let (rect, response) = ui.allocate_exact_size(egui::vec2(ui.style().text_styles.get(&egui::TextStyle::Body).unwrap().size * 10.0/14.0 , ui.style().text_styles.get(&egui::TextStyle::Body).unwrap().size * 20.0/14.0), egui::Sense::click());
         let painter = ui.painter();
 
 
@@ -66,7 +66,7 @@ impl Widget for DipSwitch<'_> {
                     }
                     let value = *self.value & (1 << i) != 0;
                     ui.vertical(|ui| {
-                        if self.draw_switch(ui, value, i).clicked() && self.interactive {
+                        if self.draw_switch(ui, value).clicked() && self.interactive {
                             // println!("Switch {} clicked", i+1);
                             //Change the value of the switch
                             *self.value ^= 1 << i;
