@@ -53,7 +53,7 @@ impl Widget for DipSwitch<'_> {
         .inner_margin(2.0)
         .rounding(0.0)
         .fill(ui.visuals().widgets.inactive.bg_fill)
-        .stroke(egui::Stroke::none())
+        .stroke(egui::Stroke::NONE)
         .show(ui, |ui| {
             ui.shrink_height_to_current();
             ui.shrink_width_to_current();
