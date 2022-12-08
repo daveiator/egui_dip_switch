@@ -1,25 +1,23 @@
-use eframe::{epaint, egui::{Widget, self, Ui}, epaint::Color32};
+use eframe::{egui::{Widget, self, Ui}, epaint::Color32};
 
 #[derive(Debug)]
-pub struct DipSwitch {
-    value: u16,
+pub struct DipSwitch<'a> {
+    value: &'a mut u16,
     size: u8,
+    interactive: bool,
 }
 
-impl DipSwitch {
-    pub fn new(size: u8, value: u16) -> Self {
+impl<'a> DipSwitch<'a> {
+    pub fn new(size: u8, value: &'a mut u16) -> Self {
         Self {
             value: value,
             size,
+            interactive: true,
         }
     }
 
-    fn draw_switch(&self, ui: &mut Ui, value: bool, index: u8) {
-        //Draws a switch with the given value
-        // ui.allocate_at_least(egui::vec2(10.0, 20.0), egui::Sense::click());
-        // allocate space for the switch
-        ui.allocate_space(egui::vec2(ui.style().text_styles.get(&egui::TextStyle::Body).unwrap().size * 10.0/14.0 , ui.style().text_styles.get(&egui::TextStyle::Body).unwrap().size * 20.0/14.0));
-        let rect = ui.min_rect();
+    fn draw_switch(&self, ui: &mut Ui, value: bool, index: u8) -> egui::Response {
+        let (rect, mut response) = ui.allocate_exact_size(egui::vec2(ui.style().text_styles.get(&egui::TextStyle::Body).unwrap().size * 10.0/14.0 , ui.style().text_styles.get(&egui::TextStyle::Body).unwrap().size * 20.0/14.0), egui::Sense::click());
         let painter = ui.painter();
 
 
@@ -29,6 +27,7 @@ impl DipSwitch {
         let inner_switch = egui::Rect::from_min_size(outer_switch.min + rim_offset + egui::vec2(0.0, !value as u8 as f32 * inner_size.y+ rim_offset.y), inner_size);
         painter.rect_filled(outer_switch, 0.0, Color32::from_gray(27));
         painter.rect_filled(inner_switch, 0.0, ui.visuals().widgets.inactive.fg_stroke.color);
+        response
     }
 
     fn draw_pre_label(&self, ui: &mut Ui) {
@@ -40,9 +39,14 @@ impl DipSwitch {
             ui.add(egui::Label::new("⬆"));
         });
     }
+
+    pub fn interactive(mut self, interactive: bool) -> Self {
+        self.interactive = interactive;
+        self
+    }
 }
 
-impl Widget for DipSwitch {
+impl Widget for DipSwitch<'_> {
     fn ui(self, ui: &mut Ui) -> egui::Response {
         ui.style_mut().visuals.widgets.noninteractive.fg_stroke.color = ui.style().visuals.widgets.inactive.fg_stroke.color;
         return egui::containers::Frame::group(ui.style())
@@ -60,9 +64,13 @@ impl Widget for DipSwitch {
                     if i > 15 {
                         return
                     }
-                    let value = self.value & (1 << i) != 0;
+                    let value = *self.value & (1 << i) != 0;
                     ui.vertical(|ui| {
-                        self.draw_switch(ui, value, i);
+                        if self.draw_switch(ui, value, i).clicked() && self.interactive {
+                            // println!("Switch {} clicked", i+1);
+                            //Change the value of the switch
+                            *self.value ^= 1 << i;
+                        }
                         ui.style_mut().spacing.item_spacing = egui::vec2(0.0, 0.0);
                         ui.add(egui::Label::new((i+1).to_string()).wrap(false));
                     });

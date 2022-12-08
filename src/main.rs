@@ -6,6 +6,7 @@ struct SwitchTest {
     value : u16,
     size: u8,
     font_size: f32,
+    interactive: bool,
 }
 
 impl Default for SwitchTest {
@@ -14,6 +15,7 @@ impl Default for SwitchTest {
             value: 0,
             size: 10,
             font_size: 14.0,
+            interactive: true,
         }
     }
 }
@@ -21,14 +23,15 @@ impl Default for SwitchTest {
 impl App for SwitchTest {
     fn update(&mut self, ctx: &eframe::egui::Context, frame: &mut eframe::Frame) {
         eframe::egui::CentralPanel::default().show(ctx, |ui| {
-            ui.label("Hello World");
+            ui.label("Dip-Switch Demo");
             ui.add(eframe::egui::Slider::new(&mut self.font_size, 1.0..=100.0).text("Font Size"));
             ui.add(eframe::egui::Slider::new(&mut self.size, 0..=10).text("Size"));
-            ui.add(eframe::egui::Slider::new(&mut self.value, 0..=u16::MAX).text("Value").step_by(1.0));
+            ui.add(eframe::egui::Slider::new(&mut self.value, 0..=1023).text("Value").step_by(1.0));
+            ui.add(eframe::egui::Checkbox::new(&mut self.interactive, "Interactive"));
             ui.style_mut().text_styles.get_mut(&egui::TextStyle::Body).unwrap().size = self.font_size;
             ui.vertical(|ui| {
                 // ui.style_mut().text_styles.get_mut(&egui::TextStyle::Body).unwrap().size = 100.0;
-                ui.add(DipSwitch::new(self.size, self.value));
+                ui.add(DipSwitch::new(self.size, &mut self.value).interactive(self.interactive));
             });
         });
     }
@@ -40,7 +43,7 @@ fn main() {
         ..Default::default()
     };
     eframe::run_native(
-        "Dip-Switch Test",
+        "Dip-Switch Demo",
         options,
         Box::new(|_cc| Box::new(SwitchTest::default())),
     );
