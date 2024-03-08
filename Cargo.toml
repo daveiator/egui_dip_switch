@@ -4,7 +4,7 @@ license = "MIT"
 version = "0.2.0"
 edition = "2021"
 description = "Interactive dip switch widget for egui"
-keywords= ["egui", "eframe", "widget", "dip switch"]
+keywords= ["egui", "eframe", "widget"]
 
 [dependencies]
 eframe = "0.26"
