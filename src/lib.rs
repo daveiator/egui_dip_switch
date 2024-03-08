@@ -48,6 +48,7 @@ impl<'a> DipSwitch<'a> {
 
 impl Widget for DipSwitch<'_> {
     fn ui(self, ui: &mut Ui) -> egui::Response {
+        ui.style_mut().interaction.selectable_labels = false;
         ui.style_mut().visuals.widgets.noninteractive.fg_stroke.color = ui.style().visuals.widgets.inactive.fg_stroke.color;
         return egui::containers::Frame::group(ui.style())
         .inner_margin(2.0)

@@ -37,14 +37,15 @@ impl App for SwitchTest {
     }
 }
 
-fn main() {
+fn main() -> Result<(), eframe::Error>{
     let options = eframe::NativeOptions {
-        initial_window_size: Some(egui::vec2(320.0, 240.0)),
+        viewport: egui::viewport::ViewportBuilder::default()
+            .with_inner_size([320.0, 240.0]),
         ..Default::default()
     };
     eframe::run_native(
         "Dip-Switch Demo",
         options,
         Box::new(|_cc| Box::new(SwitchTest::default())),
-    );
+    )
 }
